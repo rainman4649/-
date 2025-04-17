@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>あなたの詩</title>
+  <style>
+    body {
+      color: white;
+      font-family: 'Yu Mincho', serif;
+      white-space: pre-line;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: background-image 1s ease-in-out;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #poem {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      text-align: top;
+      font-size: 1.5em;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      width: 8em;
+      height: 14em;
+      line-height: 2;
+    }
+
+    #exitBtn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -20%;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="poem"></div>
+    <button id="exitBtn" onclick="location.href='index.html'">EXIT</button>
+  </div>
+
+  <script>
+    const when = [
+      "月が半分欠けた日", "強い風が吹き荒れる日", "霧がすべてを包む朝",
+      "夜の色が濃くなる頃", "雲がひとつもない昼下がり", "星の瞬きが消えた夜",
+      "時間が止まったような午後", "夢と現が交わるとき", "影が反転する夕暮れ",
+      "雪が音を飲み込む日", "朝焼けが街を染める瞬間", "雨粒が踊る日",
+      "太陽が笑う日", "空が割れるような雷の夜", "沈黙が支配する午後",
+      "記憶がよみがえるとき", "扉が軋む音がした朝", "時の隙間が開いたとき",
+      "忘れられた季節が戻る日", "猫が話しかけてきた朝", "足音が響かない夜",
+      "時計が逆さに回る日", "風鈴が逆さに揺れる午後", "沈む太陽が二つに見えるとき",
+      "砂が空を舞う朝", "涙が自然とこぼれる日", "未来の匂いがしたとき",
+      "空気が重く感じる日", "知らない歌が聞こえた瞬間", "花が笑った日"
+    ];
+
+    const where = [
+      "声が響かない洞窟で", "記憶が眠る図書館で", "無数の扉の中の一つで",
+      "深い森の奥の祭壇で", "誰もいない駅のホームで", "鏡の向こうの世界で",
+      "空に浮かぶ庭園で", "沈んだ街の跡地で", "終わらない階段の先で",
+      "影だけが歩く通りで", "夢が形になる場所で", "月に一番近い丘で",
+      "忘却の湖のほとりで", "風の止まる部屋で", "笑い声が凍る公園で",
+      "色彩を失った広場で", "境界のない部屋で", "水が上へ流れる川辺で",
+      "時間が溶ける塔の中で", "名前のない村で", "花が逆さに咲く温室で",
+      "沈黙が囁く場所で", "光が屈折する回廊で", "草原に浮かぶ島で",
+      "赤い月の出る丘で", "影が踊る城跡で", "古時計が狂った屋敷で",
+      "記憶が彷徨う廃駅で", "星を閉じ込めた洞穴で", "雪に埋もれた庭園で"
+    ];
+
+    const who = [
+      "森の言葉を知る者が", "仮面を外した道化が", "夢の住人が",
+      "時を編む老女が", "鏡に囚われた少年が", "光を集める猫が",
+      "風を従える旅人が", "本の中の住人が", "涙を忘れた王が",
+      "記憶を売る商人が", "笑顔をなくした少女が", "声なき歌姫が",
+      "影を食べる鳥が", "星を背負う戦士が", "月に願う恋人が",
+      "時間に背を向けた者が", "名を持たぬ子が", "地図にない道を歩く者が",
+      "虹を追う犬が", "炎を操る舞踏家が", "氷に閉ざされた兵士が",
+      "花に愛された人が", "音を忘れた音楽家が", "雪を編む老婆が",
+      "夜しか見えない少年が", "夢を食べる蝶が", "言葉を紡ぐ霧が",
+      "箱の中の魔術師が", "羽のない天使が", "空の上の住人が"
+    ];
+
+    const what = [
+      "道を塗り替えた。", "空を歩いた。", "未来を見てしまった。",
+      "記憶を拾い集めた。", "扉をすべて開けた。", "風と話をした。",
+      "沈黙に触れた。", "笑顔を封印した。", "夜を飲み干した。",
+      "嘘を真実に変えた。", "名前を失った。", "影を従えた。",
+      "存在を忘れた。", "涙を鍵に変えた。", "色を盗んだ。",
+      "星を数え終えた。", "闇に種をまいた。", "音を静けさに変えた。",
+      "過去を歌った。", "声を贈った。", "運命を裏返した。",
+      "孤独を祝った。", "傷を光に変えた。", "夢の続きを描いた。",
+      "希望に背を向けた。", "終わりを始まりにした。", "無を抱いた。",
+      "境界を越えた。", "願いを忘れた。", "光を見失った。"
+    ];
+
+
+    function setRandomBackground() {
+  const randomId = Math.floor(Math.random() * 1000);
+  const url = `https://picsum.photos/1600/900?random=${randomId}`;
+  document.body.style.backgroundImage = `url('${url}')`;
+}
+window.addEventListener('load', setRandomBackground);
+
+    function randomFrom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    window.onload = () => {
+
+      const poem = `${randomFrom(when)}\n${randomFrom(where)}\n${randomFrom(who)}\n${randomFrom(what)}`;
+      const poemElement = document.getElementById("poem");
+      if (poemElement) {
+        poemElement.innerText = poem;
+      }
+
+      const exitBtn = document.getElementById("exitBtn");
+      if (exitBtn) {
+        setTimeout(() => {
+          exitBtn.style.display = "block";
+        }, 5000);
+      }
+    };
+  </script>
+</body>
+</html>

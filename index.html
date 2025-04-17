@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>４行詩占い</title>
+  <style>
+    body {
+      font-family: 'Hiragino Mincho ProN', serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #222;
+      color: white;
+      text-align: center;
+      transition: background-image 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    label, input, select {
+      display: block;
+      margin: 0.5rem auto;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      cursor: pointer;
+      background-color: white;
+      color: black;
+      border: none;
+      border-radius: 8px;
+    }
+
+    button:disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>４行詩占い</h1>
+  <p>今日一日のあなたの運勢を４行からなる詩で奏でます<br><br>※感じるがまま受け止めてください</p>
+
+  <form id="fortuneForm">
+    <label>生年月日: <input type="date" id="birthdate" required></label>
+    <label>性別: 
+      <select id="gender" required>
+        <option value="">選択してください</option>
+        <option value="male">男性</option>
+        <option value="female">女性</option>
+        <option value="other">その他</option>
+      </select>
+    </label>
+    <button type="submit" id="fortuneBtn" disabled>今日の運勢を占う</button>
+  </form>
+
+  <div id="loadingOverlay" style="position: fixed; top: 0; left: 0; 
+  width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.7); display: none;  
+  align-items: center; justify-content: center; 
+  font-size: 2rem; color: white; z-index: 9999;">
+  占い中...
+</div>
+
+  
+  <script>
+    // 入力チェック
+    const birthdate = document.getElementById('birthdate');
+    const gender = document.getElementById('gender');
+    const button = document.getElementById('fortuneBtn');
+
+    function checkInputs() {
+      button.disabled = !(birthdate.value && gender.value);
+    }
+
+    birthdate.addEventListener('input', checkInputs);
+    gender.addEventListener('input', checkInputs);
+
+    document.getElementById('fortuneForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.style.display = 'flex';  // 表示
+
+  // 10秒後にページ遷移
+  setTimeout(() => {
+    window.location.href = 'result.html';
+  }, 10000); // 10000ミリ秒 = 10秒
+});
+
+
+    // ランダム背景設定
+
+
+  function setRandomBackground() {
+  const randomId = Math.floor(Math.random() * 1000);
+  const url = `https://picsum.photos/1600/900?random=${randomId}`;
+  document.body.style.backgroundImage = `url('${url}')`;
+}
+
+
+  // ページロード後に背景を設定
+  window.addEventListener('load', setRandomBackground);
+</script>
+
+</body>
+</html>
