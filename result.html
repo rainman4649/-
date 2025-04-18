@@ -159,11 +159,15 @@ window.addEventListener('load', setRandomBackground);
           exitBtn.style.display = "block";
         }, 5000);
       }
+      
+      const exitBtn = document.getElementById("Advertisement");
+      if (Advertisement) {
+        setTimeout(() => {
+          exitBtn.style.display = "block";
+        }, 5000);
+      }
+
     };
   </script>
-<a href="https://amzn.to/3Y6KBls" target="_blank" style="color: white; text-decoration: underline;font-size: 1rem;">
-      幸運アイテムはこちら
-</a>
-
 </body>
 </html>
