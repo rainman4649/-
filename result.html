@@ -159,13 +159,25 @@ window.addEventListener('load', setRandomBackground);
           exitBtn.style.display = "block";
         }, 5000);
       }
+
+     const itemLinks = [
+     "https://amzn.to/3Y6KBls",
+     "https://amzn.to/4jH6ikl",
+     "https://amzn.to/4jlsyR2",
+     "https://amzn.to/4jFtHTj"
+     ];
+
       
-      const Advertisement = document.getElementById("Advertisement");
-      if (Advertisement) {
-        setTimeout(() => {
-          Advertisement.style.display = "block";
-        }, 5000);
-      }
+     if (Advertisement) {
+       setTimeout(() => {
+       const randomIndex = Math.floor(Math.random() * itemLinks.length);
+       const randomLink = itemLinks[randomIndex];
+       Advertisement.onclick = () => {
+       location.href = randomLink;
+       };
+       Advertisement.style.display = "block";
+       }, 5000);
+       }
 
     };
   </script>
