@@ -141,86 +141,69 @@
 }
 window.addEventListener('load', setRandomBackground);
 
-    function randomFrom(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
+<script>
+  function randomFrom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function getTodayKey() {
+    const today = new Date();
+    return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  }
+
+  function generatePoem() {
+    return `${randomFrom(when)}\n${randomFrom(where)}\n${randomFrom(who)}\n${randomFrom(what)}`;
+  }
+
+  function setRandomBackground() {
+    const randomId = Math.floor(Math.random() * 1000);
+    const url = `https://picsum.photos/1600/900?random=${randomId}`;
+    document.body.style.backgroundImage = `url('${url}')`;
+  }
+
+  window.onload = () => {
+    setRandomBackground();
+
+    const poemElement = document.getElementById("poem");
+    const exitBtn = document.getElementById("exitBtn");
+    const adBtn = document.getElementById("Advertisement");
+
+    // 詩の取得と表示
+    const todayKey = getTodayKey();
+    let poem = localStorage.getItem(todayKey);
+    if (!poem) {
+      poem = generatePoem();
+      localStorage.setItem(todayKey, poem);
+    }
+    if (poemElement) {
+      poemElement.innerText = poem;
     }
 
-function getTodayKey() {
-  const today = new Date();
-  return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-}
+    // EXITボタンの表示
+    if (exitBtn) {
+      setTimeout(() => {
+        exitBtn.style.display = "block";
+      }, 5000);
+    }
 
-function generatePoem() {
-  return `${randomFrom(when)}\n${randomFrom(where)}\n${randomFrom(who)}\n${randomFrom(what)}`;
-}
+    // 広告ボタンのランダムリンク設定と表示
+    const itemLinks = [
+      "https://amzn.to/3Y6KBls",
+      "https://amzn.to/4jH6ikl",
+      "https://amzn.to/4jlsyR2",
+      "https://amzn.to/4jFtHTj"
+    ];
 
-window.onload = () => {
-  const todayKey = getTodayKey();
-  let poem = localStorage.getItem(todayKey);
-
-  if (!poem) {
-    poem = generatePoem();
-    localStorage.setItem(todayKey, poem);
-  }
-
-  const poemElement = document.getElementById("poem");
-  if (poemElement) {
-    poemElement.innerText = poem;
-  }
-
-  const exitBtn = document.getElementById("exitBtn");
-  if (exitBtn) {
-    setTimeout(() => {
-      exitBtn.style.display = "block";
-    }, 5000);
-  }
-
-  const itemLinks = [
-    "https://amzn.to/3Y6KBls",
-    "https://amzn.to/4jH6ikl",
-    "https://amzn.to/4jlsyR2",
-    "https://amzn.to/4jFtHTj"
-  ];
-
-  if (Advertisement) {
-    setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * itemLinks.length);
-      const randomLink = itemLinks[randomIndex];
-      Advertisement.onclick = () => {
-        location.href = randomLink;
-      };
-      Advertisement.style.display = "block";
-    }, 5000);
-  }
-};
-
-      const exitBtn = document.getElementById("exitBtn");
-      if (exitBtn) {
-        setTimeout(() => {
-          exitBtn.style.display = "block";
-        }, 5000);
-      }
-
-     const itemLinks = [
-     "https://amzn.to/3Y6KBls",
-     "https://amzn.to/4jH6ikl",
-     "https://amzn.to/4jlsyR2",
-     "https://amzn.to/4jFtHTj"
-     ];
-
-      
-     if (Advertisement) {
-       setTimeout(() => {
-       const randomIndex = Math.floor(Math.random() * itemLinks.length);
-       const randomLink = itemLinks[randomIndex];
-       Advertisement.onclick = () => {
-       location.href = randomLink;
-       };
-       Advertisement.style.display = "block";
-       }, 5000);
-       }
-
-    };
-  </script>
+    if (adBtn) {
+      setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * itemLinks.length);
+        adBtn.onclick = () => {
+          location.href = itemLinks[randomIndex];
+        };
+        adBtn.style.display = "block";
+      }, 5000);
+    }
+  };
+</script>
 </body>
 </html>
