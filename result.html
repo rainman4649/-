@@ -145,13 +145,54 @@ window.addEventListener('load', setRandomBackground);
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    window.onload = () => {
+function getTodayKey() {
+  const today = new Date();
+  return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+}
 
-      const poem = `${randomFrom(when)}\n${randomFrom(where)}\n${randomFrom(who)}\n${randomFrom(what)}`;
-      const poemElement = document.getElementById("poem");
-      if (poemElement) {
-        poemElement.innerText = poem;
-      }
+function generatePoem() {
+  return `${randomFrom(when)}\n${randomFrom(where)}\n${randomFrom(who)}\n${randomFrom(what)}`;
+}
+
+window.onload = () => {
+  const todayKey = getTodayKey();
+  let poem = localStorage.getItem(todayKey);
+
+  if (!poem) {
+    poem = generatePoem();
+    localStorage.setItem(todayKey, poem);
+  }
+
+  const poemElement = document.getElementById("poem");
+  if (poemElement) {
+    poemElement.innerText = poem;
+  }
+
+  const exitBtn = document.getElementById("exitBtn");
+  if (exitBtn) {
+    setTimeout(() => {
+      exitBtn.style.display = "block";
+    }, 5000);
+  }
+
+  const itemLinks = [
+    "https://amzn.to/3Y6KBls",
+    "https://amzn.to/4jH6ikl",
+    "https://amzn.to/4jlsyR2",
+    "https://amzn.to/4jFtHTj"
+  ];
+
+  if (Advertisement) {
+    setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * itemLinks.length);
+      const randomLink = itemLinks[randomIndex];
+      Advertisement.onclick = () => {
+        location.href = randomLink;
+      };
+      Advertisement.style.display = "block";
+    }, 5000);
+  }
+};
 
       const exitBtn = document.getElementById("exitBtn");
       if (exitBtn) {
