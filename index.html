@@ -82,42 +82,57 @@
 </div>
 
   
-  <script>
-    // 入力チェック
-    const birthdate = document.getElementById('birthdate');
-    const gender = document.getElementById('gender');
-    const button = document.getElementById('fortuneBtn');
+<script>
+  const birthdate = document.getElementById('birthdate');
+  const gender = document.getElementById('gender');
+  const button = document.getElementById('fortuneBtn');
 
-    function checkInputs() {
-      button.disabled = !(birthdate.value && gender.value);
+  function checkInputs() {
+    button.disabled = !(birthdate.value && gender.value);
+  }
+
+  birthdate.addEventListener('input', checkInputs);
+  gender.addEventListener('input', checkInputs);
+
+  document.getElementById('fortuneForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.style.display = 'flex';  // 「占い中…」を表示
+
+    const birth = birthdate.value;
+    const gen = gender.value;
+    const today = new Date().toISOString().split('T')[0]; // yyyy-mm-dd 形式
+
+    // ユニークキー（例: 1990-01-01_male_2025-04-17）
+    const userKey = `${birth}_${gen}_${today}`;
+
+    // ローカルストレージに保存済みなら、それを使う
+    let seed = localStorage.getItem(userKey);
+    if (!seed) {
+      // 新しいランダム種を作成
+      seed = Math.floor(Math.random() * 1000000);
+      localStorage.setItem(userKey, seed);
     }
 
-    birthdate.addEventListener('input', checkInputs);
-    gender.addEventListener('input', checkInputs);
+    // 10秒後に result.html にパラメータ付きで遷移
+    setTimeout(() => {
+      const params = new URLSearchParams({
+        birth: birth,
+        gender: gen,
+        seed: seed
+      });
+      window.location.href = `result.html?${params.toString()}`;
+    }, 10000);
+  });
 
-    document.getElementById('fortuneForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const overlay = document.getElementById('loadingOverlay');
-  overlay.style.display = 'flex';  // 表示
-
-  // 10秒後にページ遷移
-  setTimeout(() => {
-    window.location.href = 'result.html';
-  }, 10000); // 10000ミリ秒 = 10秒
-});
-
-
-    // ランダム背景設定
-
-
+  // ランダム背景設定
   function setRandomBackground() {
-  const randomId = Math.floor(Math.random() * 1000);
-  const url = `https://picsum.photos/1600/900?random=${randomId}`;
-  document.body.style.backgroundImage = `url('${url}')`;
-}
+    const randomId = Math.floor(Math.random() * 1000);
+    const url = `https://picsum.photos/1600/900?random=${randomId}`;
+    document.body.style.backgroundImage = `url('${url}')`;
+  }
 
-
-  // ページロード後に背景を設定
   window.addEventListener('load', setRandomBackground);
 </script>
 
