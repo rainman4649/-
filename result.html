@@ -3,200 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>あなたの詩</title>
+  <title>占い結果</title>
   <style>
     body {
-      color: white;
-      font-family: 'Yu Mincho', serif;
-      white-space: pre-line;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      transition: background-image 1s ease-in-out;
-      margin: 0;
-      height: 90vh;
-      overflow: hidden;
-      position: relative;
-    }
-
-    #container {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      font-family: 'Hiragino Mincho ProN', serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-
-    #poem {
-      writing-mode: vertical-rl;
-      text-orientation: upright;
-      text-align: top;
-      font-size: 1.5em;
-      padding: 20px;
-      background-color: rgba(0, 0, 0, 0.4);
-      border-radius: 12px;
-      width: 8em;
-      height: 14em;
-      line-height: 2;
-    }
-
-    #exitBtn {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: -15%;
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #111;
       color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 4px #000;
+    }
+
+    p {
+      font-size: 1.5rem;
+      margin: 0.5rem 0;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      background-color: white;
+      color: black;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      display: none;
-    }
-      #Advertisement {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: -30%;
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: rgba(0, 0, 0, 0.7);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      display: none;
     }
 
+    .back-btn:hover {
+      background-color: #ddd;
+    }
   </style>
 </head>
 <body>
-  <div id="container">
-    <div id="poem"></div>
-    <button id="exitBtn" onclick="location.href='index.html'">EXIT</button>
-    <button id="Advertisement" onclick="location.href='https://amzn.to/3Y6KBls'">アイテム</button>
-  </div>
+  <h1>今日のあなたへの詩</h1>
+
+  <div id="poem"></div>
+
+  <button class="back-btn" onclick="window.location.href='index.html'">もう一度占う</button>
 
   <script>
-    const when = [
-      "月が半分欠けた日", "強い風が吹き荒れる日", "霧がすべてを包む朝",
-      "夜の色が濃くなる頃", "雲がひとつもない昼下がり", "星の瞬きが消えた夜",
-      "時間が止まったような午後", "夢と現が交わるとき", "影が反転する夕暮れ",
-      "雪が音を飲み込む日", "朝焼けが街を染める瞬間", "雨粒が踊る日",
-      "太陽が笑う日", "空が割れるような雷の夜", "沈黙が支配する午後",
-      "記憶がよみがえるとき", "扉が軋む音がした朝", "時の隙間が開いたとき",
-      "忘れられた季節が戻る日", "猫が話しかけてきた朝", "足音が響かない夜",
-      "時計が逆さに回る日", "風鈴が逆さに揺れる午後", "沈む太陽が二つに見えるとき",
-      "砂が空を舞う朝", "涙が自然とこぼれる日", "未来の匂いがしたとき",
-      "空気が重く感じる日", "知らない歌が聞こえた瞬間", "花が笑った日"
-    ];
+    // URLパラメータ取得
+    const params = new URLSearchParams(window.location.search);
+    const birth = params.get('birth');
+    const gender = params.get('gender');
+    const seed = parseInt(params.get('seed'), 10);
 
-    const where = [
-      "声が響かない洞窟で", "記憶が眠る図書館で", "無数の扉の中の一つで",
-      "深い森の奥の祭壇で", "誰もいない駅のホームで", "鏡の向こうの世界で",
-      "空に浮かぶ庭園で", "沈んだ街の跡地で", "終わらない階段の先で",
-      "影だけが歩く通りで", "夢が形になる場所で", "月に一番近い丘で",
-      "忘却の湖のほとりで", "風の止まる部屋で", "笑い声が凍る公園で",
-      "色彩を失った広場で", "境界のない部屋で", "水が上へ流れる川辺で",
-      "時間が溶ける塔の中で", "名前のない村で", "花が逆さに咲く温室で",
-      "沈黙が囁く場所で", "光が屈折する回廊で", "草原に浮かぶ島で",
-      "赤い月の出る丘で", "影が踊る城跡で", "古時計が狂った屋敷で",
-      "記憶が彷徨う廃駅で", "星を閉じ込めた洞穴で", "雪に埋もれた庭園で"
-    ];
-
-    const who = [
-      "森の言葉を知る者が", "仮面を外した道化が", "夢の住人が",
-      "時を編む老女が", "鏡に囚われた少年が", "光を集める猫が",
-      "風を従える旅人が", "本の中の住人が", "涙を忘れた王が",
-      "記憶を売る商人が", "笑顔をなくした少女が", "声なき歌姫が",
-      "影を食べる鳥が", "星を背負う戦士が", "月に願う恋人が",
-      "時間に背を向けた者が", "名を持たぬ子が", "地図にない道を歩く者が",
-      "虹を追う犬が", "炎を操る舞踏家が", "氷に閉ざされた兵士が",
-      "花に愛された人が", "音を忘れた音楽家が", "雪を編む老婆が",
-      "夜しか見えない少年が", "夢を食べる蝶が", "言葉を紡ぐ霧が",
-      "箱の中の魔術師が", "羽のない天使が", "空の上の住人が"
-    ];
-
-    const what = [
-      "道を塗り替えた。", "空を歩いた。", "未来を見てしまった。",
-      "記憶を拾い集めた。", "扉をすべて開けた。", "風と話をした。",
-      "沈黙に触れた。", "笑顔を封印した。", "夜を飲み干した。",
-      "嘘を真実に変えた。", "名前を失った。", "影を従えた。",
-      "存在を忘れた。", "涙を鍵に変えた。", "色を盗んだ。",
-      "星を数え終えた。", "闇に種をまいた。", "音を静けさに変えた。",
-      "過去を歌った。", "声を贈った。", "運命を裏返した。",
-      "孤独を祝った。", "傷を光に変えた。", "夢の続きを描いた。",
-      "希望に背を向けた。", "終わりを始まりにした。", "無を抱いた。",
-      "境界を越えた。", "願いを忘れた。", "光を見失った。"
-    ];
-
-
-    function setRandomBackground() {
-  const randomId = Math.floor(Math.random() * 1000);
-  const url = `https://picsum.photos/1600/900?random=${randomId}`;
-  document.body.style.backgroundImage = `url('${url}')`;
-}
-    
-  function randomFrom(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-  function getTodayKey() {
-    const today = new Date();
-    return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-  }
-
-  function generatePoem() {
-    return `${randomFrom(when)}\n${randomFrom(where)}\n${randomFrom(who)}\n${randomFrom(what)}`;
-  }
-
-
-  window.onload = () => {
-    setRandomBackground();
-
-    const poemElement = document.getElementById("poem");
-    const exitBtn = document.getElementById("exitBtn");
-    const adBtn = document.getElementById("Advertisement");
-
-    // 詩の取得と表示
-    const todayKey = getTodayKey();
-    let poem = localStorage.getItem(todayKey);
-    if (!poem) {
-      poem = generatePoem();
-      localStorage.setItem(todayKey, poem);
-    }
-    if (poemElement) {
-      poemElement.innerText = poem;
+    // シード付きランダム関数（線形合同法）
+    function seededRandom(seed) {
+      let value = seed;
+      return function() {
+        value = (value * 1664525 + 1013904223) % 4294967296;
+        return value / 4294967296;
+      };
     }
 
-    // EXITボタンの表示
-    if (exitBtn) {
-      setTimeout(() => {
-        exitBtn.style.display = "block";
-      }, 5000);
-    }
+    const random = seededRandom(seed);
 
-    // 広告ボタンのランダムリンク設定と表示
-    const itemLinks = [
-      "https://amzn.to/3Y6KBls",
-      "https://amzn.to/4jH6ikl",
-      "https://amzn.to/4jlsyR2",
-      "https://amzn.to/4jFtHTj"
+    // 詩の選択肢（例：各30行に拡張可能）
+    const whenLines = [
+      "夜明けの光が差すとき", "夕暮れがすべてを染めるころ", "星が降る夜に", "月が満ちる前夜に"
+    ];
+    const whereLines = [
+      "静かな湖のほとりで", "記憶が眠る図書館で", "声が響かない洞窟で", "無数の扉の中の一つで"
+    ];
+    const whoLines = [
+      "森の言葉を知る者が", "鏡の中のあなたが", "風の噂を追う旅人が", "道を塗り替えた"
+    ];
+    const whatLines = [
+      "心の鍵を見つけた", "未来のかけらを拾った", "すべてを手放した", "運命を言葉にした"
     ];
 
-    if (adBtn) {
-      setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * itemLinks.length);
-        adBtn.onclick = () => {
-          location.href = itemLinks[randomIndex];
-        };
-        adBtn.style.display = "block";
-      }, 5000);
+    function pickRandomLine(array) {
+      return array[Math.floor(random() * array.length)];
     }
-  };
-</script>
+
+    const poem = [
+      pickRandomLine(whenLines),
+      pickRandomLine(whereLines),
+      pickRandomLine(whoLines),
+      pickRandomLine(whatLines)
+    ];
+
+    const poemDiv = document.getElementById('poem');
+    poem.forEach(line => {
+      const p = document.createElement('p');
+      p.textContent = line;
+      poemDiv.appendChild(p);
+    });
+
+    // 背景画像もseedから固定
+    const bgId = Math.floor(random() * 1000);
+    document.body.style.backgroundImage = `url('https://picsum.photos/1600/900?random=${bgId}')`;
+  </script>
 </body>
 </html>
