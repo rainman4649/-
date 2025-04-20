@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -57,7 +56,8 @@
       cursor: pointer;
       display: none;
     }
-      #Advertisement {
+
+    #Advertisement {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
@@ -71,14 +71,13 @@
       cursor: pointer;
       display: none;
     }
-
   </style>
 </head>
 <body>
   <div id="container">
     <div id="poem"></div>
     <button id="exitBtn" onclick="location.href='index.html'">EXIT</button>
-    <button id="Advertisement" onclick="location.href='https://amzn.to/3Y6KBls'">アイテム</button>
+    <button id="Advertisement">アイテム</button>
   </div>
 
   <script>
@@ -135,69 +134,72 @@
     ];
 
 
+    function seededRandom(seed) {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    }
+
+    function seededChoice(arr, seedOffset) {
+      const index = Math.floor(seededRandom(seedOffset) * arr.length);
+      return arr[index];
+    }
+
+    function getParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        birth: params.get("birth"),
+        gender: params.get("gender"),
+        seed: parseInt(params.get("seed"))
+      };
+    }
+
+    function generateSeededPoem(seed) {
+      return [
+        seededChoice(when, seed + 1),
+        seededChoice(where, seed + 2),
+        seededChoice(who, seed + 3),
+        seededChoice(what, seed + 4)
+      ].join("\n");
+    }
+
     function setRandomBackground() {
-  const randomId = Math.floor(Math.random() * 1000);
-  const url = `https://picsum.photos/1600/900?random=${randomId}`;
-  document.body.style.backgroundImage = `url('${url}')`;
-}
-    
-  function randomFrom(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-  function getTodayKey() {
-    const today = new Date();
-    return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-  }
-
-  function generatePoem() {
-    return `${randomFrom(when)}\n${randomFrom(where)}\n${randomFrom(who)}\n${randomFrom(what)}`;
-  }
-
-
-  window.onload = () => {
-    setRandomBackground();
-
-    const poemElement = document.getElementById("poem");
-    const exitBtn = document.getElementById("exitBtn");
-    const adBtn = document.getElementById("Advertisement");
-
-    // 詩の取得と表示
-    const todayKey = getTodayKey();
-    let poem = localStorage.getItem(todayKey);
-    if (!poem) {
-      poem = generatePoem();
-      localStorage.setItem(todayKey, poem);
+      const randomId = Math.floor(Math.random() * 1000);
+      const url = `https://picsum.photos/1600/900?random=${randomId}`;
+      document.body.style.backgroundImage = `url('${url}')`;
     }
-    if (poemElement) {
+
+    window.onload = () => {
+      setRandomBackground();
+
+      const { birth, gender, seed } = getParams();
+      const poemKey = `${birth}_${gender}_${seed}`;
+      const poemElement = document.getElementById("poem");
+      const exitBtn = document.getElementById("exitBtn");
+      const adBtn = document.getElementById("Advertisement");
+
+      let poem = localStorage.getItem(poemKey);
+      if (!poem) {
+        poem = generateSeededPoem(seed);
+        localStorage.setItem(poemKey, poem);
+      }
       poemElement.innerText = poem;
-    }
 
-    // EXITボタンの表示
-    if (exitBtn) {
       setTimeout(() => {
         exitBtn.style.display = "block";
-      }, 5000);
-    }
+        adBtn.style.display = "block";
 
-    // 広告ボタンのランダムリンク設定と表示
-    const itemLinks = [
-      "https://amzn.to/3Y6KBls",
-      "https://amzn.to/4jH6ikl",
-      "https://amzn.to/4jlsyR2",
-      "https://amzn.to/4jFtHTj"
-    ];
-
-    if (adBtn) {
-      setTimeout(() => {
+        const itemLinks = [
+          "https://amzn.to/3Y6KBls",
+          "https://amzn.to/4jH6ikl",
+          "https://amzn.to/4jlsyR2",
+          "https://amzn.to/4jFtHTj"
+        ];
         const randomIndex = Math.floor(Math.random() * itemLinks.length);
         adBtn.onclick = () => {
           location.href = itemLinks[randomIndex];
         };
-        adBtn.style.display = "block";
       }, 5000);
-    }
-  };
-</script>
+    };
+  </script>
 </body>
 </html>
